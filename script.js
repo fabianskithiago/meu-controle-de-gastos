@@ -1,0 +1,1 @@
+console.log("Olá! Meu primeiro projeto de Vibe Coding está funcionando!");
