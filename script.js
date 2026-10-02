@@ -77,6 +77,56 @@ formulario.addEventListener("submit", function(event) {
     adicionarDespesa();
 });
 
+
+function editarDespesa(despesa, informacoes) {
+    const novaDescricao = prompt(
+        "Digite a nova descrição:",
+        despesa.descricao
+    );
+
+    const novoValor = prompt(
+        "Digite o novo valor:",
+        despesa.valor
+    );
+
+    const novaCategoria = prompt(
+        "Digite a nova categoria:",
+        despesa.categoria
+    );
+
+    if (
+        novaDescricao === null ||
+        novoValor === null ||
+        novaCategoria === null
+    ) {
+        return;
+    }
+
+    const valorNumerico = Number(novoValor);
+
+    if (
+        novaDescricao.trim() === "" ||
+        isNaN(valorNumerico) ||
+        valorNumerico <= 0 ||
+        novaCategoria.trim() === ""
+    ) {
+        alert("Preencha todos os campos corretamente.");
+        return;
+    }
+
+    despesa.descricao = novaDescricao;
+    despesa.valor = valorNumerico;
+    despesa.categoria = novaCategoria;
+
+    informacoes.textContent =
+        `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria}`;
+
+    atualizarTotal();
+
+    salvarDespesas();
+}
+
+
 function mostrarDespesa(despesa) {
     const novaDespesa = document.createElement("div");
 
@@ -92,55 +142,7 @@ function mostrarDespesa(despesa) {
     botaoEditar.textContent = "Editar";
 
     botaoEditar.addEventListener("click", function() {
-        const novaDescricao = prompt(
-            "Digite a nova descrição:",
-            despesa.descricao
-        );
-
-        const novoValor = prompt(
-            "Digite o novo valor:",
-            despesa.valor
-        );
-
-        const novaCategoria = prompt(
-            "Digite a nova categoria:",
-            despesa.categoria
-        );
-
-        if (
-            novaDescricao === null ||
-            novoValor === null ||
-            novaCategoria === null
-        ) {
-            return;
-        }
-
-        const valorNumerico = Number(novoValor);
-
-        if (
-            novaDescricao.trim() === "" ||
-            isNaN(valorNumerico) ||
-            valorNumerico <= 0 ||
-            novaCategoria.trim() === ""
-        ) {
-            alert("Preencha todos os campos corretamente.");
-            return;
-        }
-
-
-
-        despesa.descricao = novaDescricao;
-        despesa.valor = valorNumerico;
-        despesa.categoria = novaCategoria;
-
-        
-
-        informacoes.textContent =
-            `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria}`;
-
-        atualizarTotal();
-
-        salvarDespesas();
+        editarDespesa(despesa, informacoes);
     });
 
     const botaoExcluir = document.createElement("button");
