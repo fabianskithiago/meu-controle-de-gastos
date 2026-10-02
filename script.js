@@ -7,7 +7,16 @@ const listaDespesas = document.querySelector(".despesas");
 const totalGasto = document.querySelector(".total p");
 
 let despesas = [];
-let total = 0;
+
+function calcularTotal() {
+    let soma = 0;
+
+    despesas.forEach(function(despesa) {
+        soma += despesa.valor;
+    });
+
+    return soma;
+}
 
 function formatarMoeda(valor) {
     return valor.toLocaleString("pt-BR", {
@@ -27,7 +36,6 @@ function carregarDespesas() {
         despesas = JSON.parse(dadosSalvos);
 
         despesas.forEach(function(despesa) {
-            total += despesa.valor;
             mostrarDespesa(despesa);
         });
 
@@ -35,9 +43,8 @@ function carregarDespesas() {
     }
 }
 
-formulario.addEventListener("submit", function(event) {
-    event.preventDefault();
-
+function adicionarDespesa() {
+    
     const descricao = campoDescricao.value;
     const valor = Number(campoValor.value);
     const categoria = campoCategoria.value;
@@ -55,8 +62,6 @@ formulario.addEventListener("submit", function(event) {
 
     despesas.push(despesa);
 
-    total += valor;
-
     mostrarDespesa(despesa);
 
     atualizarTotal();
@@ -64,6 +69,12 @@ formulario.addEventListener("submit", function(event) {
     salvarDespesas();
 
     formulario.reset();
+}
+
+formulario.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    adicionarDespesa();
 });
 
 function mostrarDespesa(despesa) {
@@ -116,13 +127,13 @@ function mostrarDespesa(despesa) {
             return;
         }
 
-        total -= despesa.valor;
+
 
         despesa.descricao = novaDescricao;
         despesa.valor = valorNumerico;
         despesa.categoria = novaCategoria;
 
-        total += despesa.valor;
+        
 
         informacoes.textContent =
             `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria}`;
@@ -144,7 +155,6 @@ function mostrarDespesa(despesa) {
         if (confirmar) {
             novaDespesa.remove();
 
-            total -= despesa.valor;
 
             despesas = despesas.filter(function(item) {
                 return item !== despesa;
@@ -166,6 +176,8 @@ function mostrarDespesa(despesa) {
 }
 
 function atualizarTotal() {
+    const total = calcularTotal();
+
     totalGasto.textContent = formatarMoeda(total);
 }
 
