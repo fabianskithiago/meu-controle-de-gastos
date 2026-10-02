@@ -16,6 +16,25 @@ function formatarMoeda(valor) {
     });
 }
 
+function salvarDespesas() {
+    localStorage.setItem("despesas", JSON.stringify(despesas));
+}
+
+function carregarDespesas() {
+    const dadosSalvos = localStorage.getItem("despesas");
+
+    if (dadosSalvos !== null) {
+        despesas = JSON.parse(dadosSalvos);
+
+        despesas.forEach(function(despesa) {
+            total += despesa.valor;
+            mostrarDespesa(despesa);
+        });
+
+        atualizarTotal();
+    }
+}
+
 formulario.addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -41,6 +60,8 @@ formulario.addEventListener("submit", function(event) {
     mostrarDespesa(despesa);
 
     atualizarTotal();
+
+    salvarDespesas();
 
     formulario.reset();
 });
@@ -107,6 +128,8 @@ function mostrarDespesa(despesa) {
             `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria}`;
 
         atualizarTotal();
+
+        salvarDespesas();
     });
 
     const botaoExcluir = document.createElement("button");
@@ -123,7 +146,13 @@ function mostrarDespesa(despesa) {
 
             total -= despesa.valor;
 
+            despesas = despesas.filter(function(item) {
+                return item !== despesa;
+            });
+
             atualizarTotal();
+
+            salvarDespesas();
         }
     });
 
@@ -139,3 +168,5 @@ function mostrarDespesa(despesa) {
 function atualizarTotal() {
     totalGasto.textContent = formatarMoeda(total);
 }
+
+carregarDespesas();
