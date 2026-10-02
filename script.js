@@ -127,6 +127,24 @@ function editarDespesa(despesa, informacoes) {
 }
 
 
+function excluirDespesa(despesa, elementoDespesa) {
+    const confirmar = confirm(
+        "Tem certeza que deseja excluir esta despesa?"
+    );
+
+    if (confirmar) {
+        elementoDespesa.remove();
+
+        despesas = despesas.filter(function(item) {
+            return item !== despesa;
+        });
+
+        atualizarTotal();
+
+        salvarDespesas();
+    }
+}
+
 function mostrarDespesa(despesa) {
     const novaDespesa = document.createElement("div");
 
@@ -150,22 +168,7 @@ function mostrarDespesa(despesa) {
     botaoExcluir.textContent = "Excluir";
 
     botaoExcluir.addEventListener("click", function() {
-        const confirmar = confirm(
-            "Tem certeza que deseja excluir esta despesa?"
-        );
-
-        if (confirmar) {
-            novaDespesa.remove();
-
-
-            despesas = despesas.filter(function(item) {
-                return item !== despesa;
-            });
-
-            atualizarTotal();
-
-            salvarDespesas();
-        }
+        excluirDespesa(despesa, novaDespesa);
     });
 
     areaBotoes.appendChild(botaoEditar);
