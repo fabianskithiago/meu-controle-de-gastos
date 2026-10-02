@@ -3,10 +3,19 @@ const campoDescricao = document.querySelector("#descricao");
 const campoValor = document.querySelector("#valor");
 const campoCategoria = document.querySelector("#categoria");
 
-const listaDespesas = document.querySelector(".despesas");
+const listaDespesas = document.querySelector(".lista-despesas");
+const mensagemVazia = document.querySelector(".mensagem-vazia");
 const totalGasto = document.querySelector(".total p");
 
 let despesas = [];
+
+function mostrarMensagemVazia() {
+    if (despesas.length === 0) {
+        mensagemVazia.style.display = "block";
+    } else {
+        mensagemVazia.style.display = "none";
+    }
+}
 
 function calcularTotal() {
     let soma = 0;
@@ -40,7 +49,10 @@ function carregarDespesas() {
         });
 
         atualizarTotal();
+
     }
+
+    mostrarMensagemVazia();
 }
 
 function adicionarDespesa() {
@@ -61,6 +73,8 @@ function adicionarDespesa() {
     };
 
     despesas.push(despesa);
+
+    mostrarMensagemVazia();
 
     mostrarDespesa(despesa);
 
@@ -138,6 +152,8 @@ function excluirDespesa(despesa, elementoDespesa) {
         despesas = despesas.filter(function(item) {
             return item !== despesa;
         });
+
+        mostrarMensagemVazia();
 
         atualizarTotal();
 

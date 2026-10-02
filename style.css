@@ -59,7 +59,7 @@ form button {
 }
 
 /* Lista de despesas */
-.despesas div {
+.lista-despesas > div {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -82,28 +82,15 @@ form button {
     color: #e53935;
 }
 
-.despesas div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.despesas div > div {
+.lista-despesas > div > div {
     display: flex;
     gap: 8px;
 }
 
-.despesas div button {
-    color: white;
-}
-
-.despesas div button:first-child {
+.lista-despesas > div > div button:first-child {
     background-color: #64b5f6;
 }
 
-.despesas div button:last-child {
+.lista-despesas > div > div button:last-child {
     background-color: #e53935;
 }
