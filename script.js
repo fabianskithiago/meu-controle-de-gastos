@@ -1,1 +1,1 @@
-console.log("Olá! Meu primeiro projeto de Vibe Coding está funcionando!");
+console.log("Interface do Controle de Gastos carregada!");

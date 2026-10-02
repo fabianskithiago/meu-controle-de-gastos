@@ -1,14 +1,57 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Gastos</title>
+    <title>Meu Controle de Gastos</title>
+
+
+<link rel="stylesheet" href="style.css">
+
+
 </head>
+
 <body>
+
+
+<main class="container">
 
     <h1>Meu Controle de Gastos</h1>
 
-    <script src="script.js"></script>
+    <section class="formulario">
+        <h2>Adicionar despesa</h2>
+
+        <form>
+            <label for="descricao">Descrição</label>
+            <input type="text" id="descricao" placeholder="Ex: Almoço">
+
+            <label for="valor">Valor</label>
+            <input type="number" id="valor" placeholder="Ex: 25.00" step="0.01">
+
+            <label for="categoria">Categoria</label>
+            <input type="text" id="categoria" placeholder="Ex: Alimentação">
+
+            <button type="submit">Adicionar despesa</button>
+        </form>
+    </section>
+
+    <section class="despesas">
+        <h2>Minhas despesas</h2>
+
+        <p>As despesas adicionadas aparecerão aqui.</p>
+    </section>
+
+    <section class="total">
+        <h2>Total gasto</h2>
+
+        <p>R$ 0,00</p>
+    </section>
+
+</main>
+
+<script src="script.js"></script>
+
+
 </body>
 </html>
