@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const db = require("./database");
 
 const app = express();
 
@@ -28,20 +29,25 @@ app.get("/", function(req, res) {
 });
 
 app.get("/despesas", function(req, res) {
+    const despesas = db.prepare("SELECT * FROM despesas").all();
+
     res.json(despesas);
 });
 
 app.post("/despesas", function(req, res) {
     const novaDespesa = req.body;
 
-    //console.log("Antes de criar ID:", novaDespesa);
+    const resultado = db.prepare(`
+        INSERT INTO despesas (descricao, valor, data, categoria)
+        VALUES (?, ?, ?, ?)
+    `).run(
+        novaDespesa.descricao,
+        novaDespesa.valor,
+        novaDespesa.data,
+        novaDespesa.categoria
+    );
 
-    novaDespesa.id = despesas.length + 1;
-
-    //console.log("ID criado:", novaDespesa.id);
-    //console.log("Total de despesas:", despesas.length);
-
-    despesas.push(novaDespesa);
+    novaDespesa.id = resultado.lastInsertRowid;
 
     res.json(novaDespesa);
 });
@@ -53,28 +59,9 @@ app.listen(3000, function() {
 app.delete("/despesas/:id", function(req, res) {
     const id = Number(req.params.id);
 
-    const indice = despesas.findIndex(function(despesa) {
-        return despesa.id === id;
-    });
-
-    if (indice === -1) {
-        return res.status(404).json({
-            mensagem: "Despesa não encontrada."
-        });
-    }
-
-    const despesaExcluida = despesas.splice(indice, 1);
-
-    res.json(despesaExcluida[0]);
-});
-
-
-app.put("/despesas/:id", function(req, res) {
-    const id = Number(req.params.id);
-
-    const despesa = despesas.find(function(item) {
-        return item.id === id;
-    });
+    const despesa = db.prepare(
+        "SELECT * FROM despesas WHERE id = ?"
+    ).get(id);
 
     if (!despesa) {
         return res.status(404).json({
@@ -82,10 +69,42 @@ app.put("/despesas/:id", function(req, res) {
         });
     }
 
-    despesa.descricao = req.body.descricao;
-    despesa.valor = req.body.valor;
-    despesa.data = req.body.data;
-    despesa.categoria = req.body.categoria;
+    db.prepare(
+        "DELETE FROM despesas WHERE id = ?"
+    ).run(id);
 
     res.json(despesa);
+});
+
+
+app.put("/despesas/:id", function(req, res) {
+    const id = Number(req.params.id);
+
+    const despesa = db.prepare(
+        "SELECT * FROM despesas WHERE id = ?"
+    ).get(id);
+
+    if (!despesa) {
+        return res.status(404).json({
+            mensagem: "Despesa não encontrada."
+        });
+    }
+
+    db.prepare(`
+        UPDATE despesas
+        SET descricao = ?, valor = ?, data = ?, categoria = ?
+        WHERE id = ?
+    `).run(
+        req.body.descricao,
+        req.body.valor,
+        req.body.data,
+        req.body.categoria,
+        id
+    );
+
+    const despesaAtualizada = db.prepare(
+        "SELECT * FROM despesas WHERE id = ?"
+    ).get(id);
+
+    res.json(despesaAtualizada);
 });

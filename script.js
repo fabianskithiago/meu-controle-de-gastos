@@ -274,6 +274,9 @@ async function editarDespesa(despesa, informacoes) {
             mostrarDespesa(despesa);
         });
 
+        mostrarMensagemVazia();
+        atualizarTotal();
+
         console.log(dados);
     }
 
