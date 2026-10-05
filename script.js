@@ -78,6 +78,8 @@ function adicionarDespesa() {
 
     despesas.push(despesa);
 
+    salvarDespesaNoBackend(despesa);
+
     mostrarMensagemVazia();
 
     mostrarDespesa(despesa);
@@ -223,4 +225,31 @@ function atualizarTotal() {
     totalGasto.textContent = formatarMoeda(total);
 }
 
-carregarDespesas();
+async function carregarDespesasDoBackend() {
+    const resposta = await fetch("http://localhost:3000/despesas");
+    const dados = await resposta.json();
+
+    despesas = dados;
+
+    dados.forEach(function(despesa) {
+    mostrarDespesa(despesa);
+    });
+
+    console.log(dados);
+}
+
+async function salvarDespesaNoBackend(despesa) {
+    const resposta = await fetch("http://localhost:3000/despesas", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(despesa)
+    });
+
+    const novaDespesa = await resposta.json();
+    return novaDespesa;
+}
+
+
+carregarDespesasDoBackend();
