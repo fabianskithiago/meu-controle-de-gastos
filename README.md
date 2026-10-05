@@ -1,61 +1,59 @@
 # 💰 Meu Controle de Gastos
 
-Um aplicativo web simples para registrar e acompanhar despesas pessoais.
+Aplicação web para controle de despesas pessoais, desenvolvida como projeto de aprendizado em desenvolvimento web e Vibe Coding.
+
+O projeto possui **frontend**, **backend com Node.js e Express** e **banco de dados SQLite** para armazenamento persistente das despesas.
 
 ## 🚀 Funcionalidades
 
-- Adicionar despesas
-- Registrar a data da despesa
-- Informar o valor da despesa
-- Definir uma categoria
-- Editar despesas
-- Excluir despesas
-- Calcular automaticamente o total gasto
-- Salvar as despesas no localStorage
-- Manter os dados após atualizar a página
+- ✅ Cadastro de despesas
+- ✅ Listagem de despesas
+- ✅ Edição de despesas
+- ✅ Exclusão de despesas
+- ✅ Cálculo automático do total gasto
+- ✅ Formatação dos valores em Real brasileiro (R$)
+- ✅ Exibição da data da despesa
+- ✅ Persistência dos dados utilizando SQLite
+- ✅ API REST para comunicação entre frontend e backend
 
 ## 🛠️ Tecnologias utilizadas
+
+### Frontend
 
 - HTML5
 - CSS3
 - JavaScript
-- LocalStorage
-- Git e GitHub
 
-## 📚 O que estou aprendendo com este projeto
+### Backend
 
-- Manipulação do DOM
-- Eventos e formulários
-- Arrays e objetos em JavaScript
-- Funções
-- Estruturas condicionais
-- Validação de dados
-- LocalStorage e JSON
-- Organização do código
-- Uso de IA como ferramenta de apoio ao desenvolvimento
+- Node.js
+- Express
+- CORS
 
-## 🎯 Objetivo do projeto
+### Banco de dados
 
-Este projeto faz parte da minha jornada de aprendizado em programação e desenvolvimento web.
+- SQLite
+- better-sqlite3
 
-A ideia é começar com uma aplicação simples e continuar evoluindo o projeto conforme novos conhecimentos forem adquiridos.
+### Ferramentas
 
-## 🔮 Próximas melhorias
+- Visual Studio Code
+- Git
+- GitHub
+- Live Server
 
-- [ ] Melhorar o visual e a responsividade
-- [ ] Filtrar despesas por categoria
-- [ ] Filtrar despesas por período
-- [ ] Ordenar despesas por data
-- [ ] Adicionar gráficos e estatísticas
-- [ ] Melhorar a experiência de edição
-- [ ] Criar uma versão com backend e banco de dados
+## 📂 Estrutura do projeto
 
-## 📌 Status
-
-🟢 Em desenvolvimento
-
-Atualmente, o projeto funciona como uma aplicação front-end e utiliza o localStorage do navegador para armazenar os dados.
-
----
-
-Projeto desenvolvido como parte dos meus estudos de desenvolvimento web e Vibe Coding.
+```text
+meu-controle-de-gastos/
+│
+├── index.html
+├── style.css
+├── script.js
+├── server.js
+├── database.js
+├── despesas.db
+├── package.json
+├── package-lock.json
+├── .gitignore
+└── README.md
