@@ -34,7 +34,12 @@ app.get("/despesas", function(req, res) {
 app.post("/despesas", function(req, res) {
     const novaDespesa = req.body;
 
+    //console.log("Antes de criar ID:", novaDespesa);
+
     novaDespesa.id = despesas.length + 1;
+
+    //console.log("ID criado:", novaDespesa.id);
+    //console.log("Total de despesas:", despesas.length);
 
     despesas.push(novaDespesa);
 
@@ -61,4 +66,26 @@ app.delete("/despesas/:id", function(req, res) {
     const despesaExcluida = despesas.splice(indice, 1);
 
     res.json(despesaExcluida[0]);
+});
+
+
+app.put("/despesas/:id", function(req, res) {
+    const id = Number(req.params.id);
+
+    const despesa = despesas.find(function(item) {
+        return item.id === id;
+    });
+
+    if (!despesa) {
+        return res.status(404).json({
+            mensagem: "Despesa não encontrada."
+        });
+    }
+
+    despesa.descricao = req.body.descricao;
+    despesa.valor = req.body.valor;
+    despesa.data = req.body.data;
+    despesa.categoria = req.body.categoria;
+
+    res.json(despesa);
 });

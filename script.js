@@ -21,7 +21,7 @@ function mostrarMensagemVazia() {
 function calcularTotal() {
     let soma = 0;
 
-    despesas.forEach(function(despesa) {
+    despesas.forEach(function (despesa) {
         soma += despesa.valor;
     });
 
@@ -35,10 +35,13 @@ function formatarMoeda(valor) {
     });
 }
 
+/*
 function salvarDespesas() {
     localStorage.setItem("despesas", JSON.stringify(despesas));
 }
+*/
 
+/*
 function carregarDespesas() {
     const dadosSalvos = localStorage.getItem("despesas");
 
@@ -55,9 +58,10 @@ function carregarDespesas() {
 
     mostrarMensagemVazia();
 }
+*/
 
-function adicionarDespesa() {
-    
+async function adicionarDespesa() {
+
     const descricao = campoDescricao.value;
     const valor = Number(campoValor.value);
     const categoria = campoCategoria.value;
@@ -76,29 +80,32 @@ function adicionarDespesa() {
         data: data
     };
 
-    despesas.push(despesa);
+    try {
+        await salvarDespesaNoBackend(despesa);
 
-    salvarDespesaNoBackend(despesa);
+        despesas.push(despesa);
 
-    mostrarMensagemVazia();
+        mostrarMensagemVazia();
 
-    mostrarDespesa(despesa);
+        mostrarDespesa(despesa);
 
-    atualizarTotal();
+        atualizarTotal();
 
-    salvarDespesas();
-
-    formulario.reset();
+        formulario.reset();
+    } catch (erro) {
+        alert("Não foi possível salvar a despesa.");
+        console.error(erro);
+    }
 }
 
-formulario.addEventListener("submit", function(event) {
+formulario.addEventListener("submit", function (event) {
     event.preventDefault();
 
     adicionarDespesa();
 });
 
 
-function editarDespesa(despesa, informacoes) {
+async function editarDespesa(despesa, informacoes) {
     const novaDescricao = prompt(
         "Digite a nova descrição:",
         despesa.descricao
@@ -115,8 +122,8 @@ function editarDespesa(despesa, informacoes) {
     );
 
     const novaData = prompt(
-    "Digite a nova data:",
-    despesa.data
+        "Digite a nova data:",
+        despesa.data
     );
 
     if (
@@ -124,7 +131,7 @@ function editarDespesa(despesa, informacoes) {
         novoValor === null ||
         novaData === null ||
         novaCategoria === null
-        
+
     ) {
         return;
     }
@@ -147,109 +154,142 @@ function editarDespesa(despesa, informacoes) {
     despesa.data = novaData;
     despesa.categoria = novaCategoria;
 
-    informacoes.textContent =
-        `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria} - ${formatarData(despesa.data)}`;
+    try {
+        const resposta = await fetch(
+            `http://localhost:3000/despesas/${despesa.id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    descricao: novaDescricao,
+                    valor: valorNumerico,
+                    data: novaData,
+                    categoria: novaCategoria
+                })
+            }
+        );
 
-    atualizarTotal();
-
-    salvarDespesas();
-}
-
-
-function excluirDespesa(despesa, elementoDespesa) {
-    const confirmar = confirm(
-        "Tem certeza que deseja excluir esta despesa?"
-    );
-
-    if (confirmar) {
-        elementoDespesa.remove();
-
-        despesas = despesas.filter(function(item) {
-            return item !== despesa;
-        });
-
-        mostrarMensagemVazia();
+        informacoes.textContent =
+            `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria} - ${formatarData(despesa.data)}`;
 
         atualizarTotal();
 
-        salvarDespesas();
+        //salvarDespesas();
+    } catch (erro) {
+        alert("Não foi possível editar a despesa.");
+        console.error(erro);
     }
 }
 
-function formatarData(data) {
-    const partesData = data.split("-");
-    const ano = partesData[0];
-    const mes = partesData[1];
-    const dia = partesData[2];
-    return `${dia}/${mes}/${ano}`;
-}
+    async function excluirDespesa(despesa, elementoDespesa) {
+        const confirmar = confirm(
+            "Tem certeza que deseja excluir esta despesa?"
+        );
 
-function mostrarDespesa(despesa) {
-    const novaDespesa = document.createElement("div");
+        if (confirmar) {
 
-    const informacoes = document.createElement("span");
+            const resposta = await fetch(
+                `http://localhost:3000/despesas/${despesa.id}`,
+                {
+                    method: "DELETE"
+                }
+            );
 
-    informacoes.textContent =
-        `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria} - ${formatarData(despesa.data)}`;
+            const dados = await resposta.json();
 
-    const areaBotoes = document.createElement("div");
+            console.log(dados);
 
-    const botaoEditar = document.createElement("button");
+            elementoDespesa.remove();
 
-    botaoEditar.textContent = "Editar";
+            despesas = despesas.filter(function (item) {
+                return item !== despesa;
+            });
 
-    botaoEditar.addEventListener("click", function() {
-        editarDespesa(despesa, informacoes);
-    });
+            mostrarMensagemVazia();
 
-    const botaoExcluir = document.createElement("button");
+            atualizarTotal();
 
-    botaoExcluir.textContent = "Excluir";
+            //salvarDespesas();
+        }
+    }
 
-    botaoExcluir.addEventListener("click", function() {
-        excluirDespesa(despesa, novaDespesa);
-    });
+    function formatarData(data) {
+        const partesData = data.split("-");
+        const ano = partesData[0];
+        const mes = partesData[1];
+        const dia = partesData[2];
+        return `${dia}/${mes}/${ano}`;
+    }
 
-    areaBotoes.appendChild(botaoEditar);
-    areaBotoes.appendChild(botaoExcluir);
+    function mostrarDespesa(despesa) {
+        const novaDespesa = document.createElement("div");
 
-    novaDespesa.appendChild(informacoes);
-    novaDespesa.appendChild(areaBotoes);
+        const informacoes = document.createElement("span");
 
-    listaDespesas.appendChild(novaDespesa);
-}
+        informacoes.textContent =
+            `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria} - ${formatarData(despesa.data)}`;
 
-function atualizarTotal() {
-    const total = calcularTotal();
+        const areaBotoes = document.createElement("div");
 
-    totalGasto.textContent = formatarMoeda(total);
-}
+        const botaoEditar = document.createElement("button");
 
-async function carregarDespesasDoBackend() {
-    const resposta = await fetch("http://localhost:3000/despesas");
-    const dados = await resposta.json();
+        botaoEditar.textContent = "Editar";
 
-    despesas = dados;
+        botaoEditar.addEventListener("click", function () {
+            editarDespesa(despesa, informacoes);
+        });
 
-    dados.forEach(function(despesa) {
-    mostrarDespesa(despesa);
-    });
+        const botaoExcluir = document.createElement("button");
 
-    console.log(dados);
-}
+        botaoExcluir.textContent = "Excluir";
 
-async function salvarDespesaNoBackend(despesa) {
-    const resposta = await fetch("http://localhost:3000/despesas", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(despesa)
-    });
+        botaoExcluir.addEventListener("click", function () {
+            excluirDespesa(despesa, novaDespesa);
+        });
 
-    const novaDespesa = await resposta.json();
-    return novaDespesa;
-}
+        areaBotoes.appendChild(botaoEditar);
+        areaBotoes.appendChild(botaoExcluir);
+
+        novaDespesa.appendChild(informacoes);
+        novaDespesa.appendChild(areaBotoes);
+
+        listaDespesas.appendChild(novaDespesa);
+    }
+
+    function atualizarTotal() {
+        const total = calcularTotal();
+
+        totalGasto.textContent = formatarMoeda(total);
+    }
+
+    async function carregarDespesasDoBackend() {
+        const resposta = await fetch("http://localhost:3000/despesas");
+        const dados = await resposta.json();
+
+        despesas = dados;
+
+        dados.forEach(function (despesa) {
+            mostrarDespesa(despesa);
+        });
+
+        console.log(dados);
+    }
+
+    async function salvarDespesaNoBackend(despesa) {
+        const resposta = await fetch("http://localhost:3000/despesas", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(despesa)
+        });
+
+        const dados = await resposta.json();
+
+        despesa.id = dados.id;
+    }
 
 
-carregarDespesasDoBackend();
+    carregarDespesasDoBackend();
