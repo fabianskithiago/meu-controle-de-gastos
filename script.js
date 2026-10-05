@@ -146,7 +146,7 @@ function editarDespesa(despesa, informacoes) {
     despesa.categoria = novaCategoria;
 
     informacoes.textContent =
-        `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria} - ${despesa.data}`;
+        `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria} - ${formatarData(despesa.data)}`;
 
     atualizarTotal();
 
@@ -174,13 +174,21 @@ function excluirDespesa(despesa, elementoDespesa) {
     }
 }
 
+function formatarData(data) {
+    const partesData = data.split("-");
+    const ano = partesData[0];
+    const mes = partesData[1];
+    const dia = partesData[2];
+    return `${dia}/${mes}/${ano}`;
+}
+
 function mostrarDespesa(despesa) {
     const novaDespesa = document.createElement("div");
 
     const informacoes = document.createElement("span");
 
     informacoes.textContent =
-        `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria} - ${despesa.data}`;
+        `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria} - ${formatarData(despesa.data)}`;
 
     const areaBotoes = document.createElement("div");
 
