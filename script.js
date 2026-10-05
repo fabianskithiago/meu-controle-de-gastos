@@ -2,6 +2,7 @@ const formulario = document.querySelector("form");
 const campoDescricao = document.querySelector("#descricao");
 const campoValor = document.querySelector("#valor");
 const campoCategoria = document.querySelector("#categoria");
+const campoData = document.querySelector("#data");
 
 const listaDespesas = document.querySelector(".lista-despesas");
 const mensagemVazia = document.querySelector(".mensagem-vazia");
@@ -60,6 +61,8 @@ function adicionarDespesa() {
     const descricao = campoDescricao.value;
     const valor = Number(campoValor.value);
     const categoria = campoCategoria.value;
+    const data = campoData.value;
+
 
     if (descricao === "" || valor <= 0 || categoria === "") {
         alert("Preencha todos os campos corretamente.");
@@ -69,7 +72,8 @@ function adicionarDespesa() {
     const despesa = {
         descricao: descricao,
         valor: valor,
-        categoria: categoria
+        categoria: categoria,
+        data: data
     };
 
     despesas.push(despesa);
@@ -108,10 +112,17 @@ function editarDespesa(despesa, informacoes) {
         despesa.categoria
     );
 
+    const novaData = prompt(
+    "Digite a nova data:",
+    despesa.data
+    );
+
     if (
         novaDescricao === null ||
         novoValor === null ||
+        novaData === null ||
         novaCategoria === null
+        
     ) {
         return;
     }
@@ -122,7 +133,8 @@ function editarDespesa(despesa, informacoes) {
         novaDescricao.trim() === "" ||
         isNaN(valorNumerico) ||
         valorNumerico <= 0 ||
-        novaCategoria.trim() === ""
+        novaCategoria.trim() === "" ||
+        novaData.trim() === ""
     ) {
         alert("Preencha todos os campos corretamente.");
         return;
@@ -130,10 +142,11 @@ function editarDespesa(despesa, informacoes) {
 
     despesa.descricao = novaDescricao;
     despesa.valor = valorNumerico;
+    despesa.data = novaData;
     despesa.categoria = novaCategoria;
 
     informacoes.textContent =
-        `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria}`;
+        `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria} - ${despesa.data}`;
 
     atualizarTotal();
 
@@ -167,7 +180,7 @@ function mostrarDespesa(despesa) {
     const informacoes = document.createElement("span");
 
     informacoes.textContent =
-        `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria}`;
+        `${despesa.descricao} - ${formatarMoeda(despesa.valor)} - ${despesa.categoria} - ${despesa.data}`;
 
     const areaBotoes = document.createElement("div");
 
